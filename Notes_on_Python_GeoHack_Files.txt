@@ -1,0 +1,72 @@
+Some notes on the "pythonGeoHack" directory...
+Useful to read in conjunction with Jitse's IPython notebook.
+
+leedsALL.xxx:
+   Jitse says these all together form a shapefile specification, namely various bits
+   of geometry.
+
+leedsTags.csv:
+   CSV table, with columns:
+   unnamed: ???
+   id: Corresponds to the "records" in the shapefile.  Can also look up using OpenStreet Map,
+      e.g. http://www.openstreetmap.org/way/1628965
+      this shows a segment of Pudsey Road
+   highway: Type of highway
+   cycleway: "NA", or type of cyclepath
+   access: not sure what this means; the example above is "no", but it's just a normal
+      residential street
+      Should be: http://wiki.openstreetmap.org/wiki/Key:access?uselang=en-US
+      which says "access as in legal right of way", but this is clearly _not_ reflected in
+      the data!
+   foot: is there a footpath? (Again, wrong in places).
+   bicycle: accessible to a bike?
+   oneway: as it suggests
+   routeId: See below  (mostly 0, only 11 other options)
+   routingFactorId: Some number between 2 and 657; _think_ looks to mwayRF.csv
+
+
+mwayBR.csv:
+   CSV table, with columns:
+   unnamed: ??? Just counts up sequentially
+   id: a "relation" id in OpenStreet Map:
+      http://www.openstreetmap.org/relation/3103492
+   originalTags: tab separated data
+   name: Name of the route
+   network: type of the network ("lcn", "rcn", etc.)
+   cnRef: ???
+   sumLengthsKm: Total length?
+   rating: "continuous", "touring" etc.
+   
+   So these seem to be large-scale cycle networks, or collections of paths in a forest,
+   around a lake etc.  As Jitse noticed, the "routeId" from leedsTags.csv seems to correspond
+   to the "id" here, though rather few entries have a routeId.  Thus this file seems to be of
+   limited use.
+
+
+mwayRF.csv:
+   CSV table, with columns:
+   unnamed: ??? Just counts up sequentially
+   id: same as unnamed
+   color: Hex RGB triple in format #rrggbb ??
+   cyclable: no/yes
+   walkable: no/yes
+   speed: average(??) speed in mph?
+   quietness: ?? 1-100 scale seemingly
+   pause: time in seconds to deal with obstacles.
+   rfHash: apparently purely internal number.
+   Got info on these from the README.txt file.
+
+   I believe these are a lookup table from the routingFactorId column in leedsTags.
+   I wrote a little IPython notebook to check, and the cyclable and walkable fields do match
+   (except for when the data is missing from leedsTags when it seems a bit random).
+
+
+
+leedsOSMTags.csv:
+   CSV table, with columns:
+   unnamed: ???
+   id: corresponds to the "id" field in leedsTags.csv
+   k: key
+   v: value
+   So lots of key,value pairs, apparently directly from OpenStreetMap.  Contains some
+   extra data, such a "name", "ref" (e.g. A,B road number), "maxspeed" etc.
