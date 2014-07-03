@@ -7,7 +7,7 @@ from math import radians, sqrt, sin, cos, atan2
 MEAN_EARTH_RADIUS = 6.371009e+06
 
 
-def distance(p, q):
+def great_circle_distance(p, q):
     """
     Returns the great circle distance between points p and q.
 

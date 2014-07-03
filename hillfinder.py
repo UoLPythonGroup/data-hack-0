@@ -1,10 +1,10 @@
-# Finds the biggest hill in the leedsRoads.geojson data
-# (NDE, 2014-07-02)
+# Finds the biggest hill in the leedsRoads.geojson dataset
+# (NDE, 2014-07-03)
 
 import json
 import webbrowser
 import matplotlib.pyplot as plt
-from utils import distance
+from utils import great_circle_distance
 
 # Grab data from file
 
@@ -14,16 +14,22 @@ with open("pythonGeoHack/leedsRoads.geojson", "rt") as infile:
 # Find feature with biggest elevation change
 
 maxdiff = 0.0
-hill_elev = []
+elevations = []
 hill = None
 
 for feature in data["features"]:
+
+    # Convert elevation CSV to list of numbers, ignoring suspect last item
+
     csv = feature["properties"]["elevtns"]
-    elev = [ float(item) for item in csv.split(",")[:-1] ]  # ignore last item
+    elev = [ float(item) for item in csv.split(",")[:-1] ]
+
+    # Keep track of biggest elevation change
+
     diff = max(elev) - min(elev)
     if diff > maxdiff:
         maxdiff = diff
-        hill_elev = elev
+        elevations = elev
         hill = feature
 
 # Display OSM data for the hill in a browser
@@ -38,17 +44,17 @@ webbrowser.open(url)
 
 points = hill["geometry"]["coordinates"][:-1]
 
-assert len(points) == len(hill_elev)  # sanity check
+assert len(points) == len(elevations)  # sanity check
 
-d = 0
-dist = [0.0]
+dist = 0.0
+distances = [dist]
 for i in range(1, len(points)):
-    d += distance(points[i], points[i-1])
-    dist.append(d)
+    dist += great_circle_distance(points[i], points[i-1])
+    distances.append(dist)
 
 # Plot elevation vs distance using matplotlib
 
-plt.plot(dist, hill_elev)
+plt.plot(distances, elevations)
 
 plt.xlabel("Horizontal distance (m)")
 plt.ylabel("Elevation (m)")

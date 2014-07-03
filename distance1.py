@@ -5,7 +5,7 @@
 import math
 import six
 import shapefile
-from utils import distance
+from utils import great_circle_distance
 import matplotlib.pyplot as plt
 
 # Read shape data
@@ -15,7 +15,7 @@ shapes = data.shapes()
 
 # Method 1: compute distances from points
 
-dist1 = [ sum(distance(shape.points[i], shape.points[i-1])
+dist1 = [ sum(great_circle_distance(shape.points[i], shape.points[i-1])
             for i in range(1, len(shape.points)))
               for shape in shapes ]
 
